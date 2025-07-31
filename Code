@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naarika - Women Safety</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: url('background.jpeg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 40px;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            width: 85%;
+            max-width: 900px;
+            text-align: center;
+        }
+        .title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #d90429;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .feature-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #d90429;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 15px;
+            width: 180px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+        .feature-btn:hover {
+            background: #9c041f;
+            transform: scale(1.05);
+        }
+        .feature-btn i {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .video-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 200px;
+            border: 2px solid red;
+            display: none;
+        }
+        .stop-btn {
+            display: none;
+            position: fixed;
+            bottom: 220px;
+            right: 10px;
+            background: #ff0000;
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .feature-btn {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Naarika</h1>
+        <p class="subtitle">Empowering Women with Safety & Security</p>
+
+        <div class="button-container">
+            <button class="feature-btn alert-alive" onclick="playAlert()">
+                <i class="fas fa-bell"></i> Alert Alive
+            </button>
+            <button class="feature-btn safety-shield" onclick="makeEmergencyCallAndMessage()">
+                <i class="fas fa-shield-alt"></i> Safety Shield
+            </button>
+            <button class="feature-btn watch-over-me" onclick="shareLocation()">
+                <i class="fas fa-map-marker-alt"></i> Watch Over Me
+            </button>
+            <button class="feature-btn digital-recording" onclick="startRecording()">
+                <i class="fas fa-video"></i> Digital Recording
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Preview -->
+    <video id="videoPreview" class="video-container" autoplay muted></video>
+
+    <!-- Stop Recording Button -->
+    <button id="stopRecordingBtn" class="stop-btn" onclick="stopRecording()">Stop Recording</button>
+
+    <!-- Hidden Audio Player -->
+    <audio id="alert-sound">
+        <source src="audio/alert.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        let shieldPressCount = 0;
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        function playAlert() {
+            let alertSound = document.getElementById('alert-sound');
+            alertSound.loop = true;
+            alertSound.play();
+        
+            setTimeout(() => {
+                alertSound.loop = false;
+                alertSound.pause();
+                alertSound.currentTime = 0;
+            }, 600000);
+        }
+
+        function makeEmergencyCallAndMessage() {
+            shieldPressCount++;
+            if (shieldPressCount === 1) {
+                window.location.href = "tel:8179416486";
+            } else if (shieldPressCount === 2) {
+                let emergencyMessage = "🚨 Help! I am in danger. Please reach me immediately.";
+                window.location.href = sms:7569021905?body=${encodeURIComponent(emergencyMessage)};
+                shieldPressCount = 0;
+            }
+        }
+
+        function shareLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
+                    let locationMessage = 📍 My current location: Latitude ${latitude}, Longitude ${longitude}. Please reach me if needed.;
+                    window.location.href = sms:7569021905?body=${encodeURIComponent(locationMessage)};
+                }, error => {
+                    alert("❌ Unable to fetch location. Please enable GPS.");
+                });
+            } else {
+                alert("❌ Geolocation is not supported by this browser.");
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+                // Show video preview
+                let videoPreview = document.getElementById("videoPreview");
+                videoPreview.srcObject = stream;
+                videoPreview.style.display = "block";
+
+                // Show stop button
+                let stopBtn = document.getElementById("stopRecordingBtn");
+                stopBtn.style.display = "block";
+
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    saveRecording();
+                    stream.getTracks().forEach(track => track.stop());
+                    videoPreview.style.display = "none";
+                    stopBtn.style.display = "none";
+                };
+
+                mediaRecorder.start();
+                alert("🎥 Recording started!");
+            } catch (error) {
+                alert("❌ Unable to access camera/microphone. Please allow permissions.");
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                alert("📁 Recording saved.");
+            }
+        }
+    </script>
+</body>
+</html>
